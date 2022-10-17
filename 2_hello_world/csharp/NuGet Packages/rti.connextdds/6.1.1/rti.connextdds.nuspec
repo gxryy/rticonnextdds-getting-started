@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Rti.ConnextDds</id>
+    <version>6.1.1+BUILD-6.1.1.0-20220323T000000Z-RTI-REL</version>
+    <title>RTI Connext DDS C# API</title>
+    <authors>RTI</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="file">LICENSE.txt</license>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
+    <icon>rti_icon.png</icon>
+    <projectUrl>https://community.rti.com/static/documentation/connext-dds/6.1.1/doc/manuals/connext_dds_professional/getting_started_guide/index.html</projectUrl>
+    <description>Licensed with RTI® Connext® DDS Professional. RTI Connext DDS is a connectivity framework for building distributed applications with requirements for high performance and scalability.</description>
+    <releaseNotes>https://community.rti.com/static/documentation/connext-dds/6.1.1/doc/api/connext_dds/api_csharp/group___release_notes.html</releaseNotes>
+    <copyright>2021</copyright>
+    <tags>dds middleware iiot pubsub</tags>
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Rti.ConnextDds.Native" version="6.1.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Bcl.HashCode" version="1.1.0" exclude="Build,Analyzers" />
+        <dependency id="System.Collections.Immutable" version="1.7.1" exclude="Build,Analyzers" />
+        <dependency id="System.Runtime.CompilerServices.Unsafe" version="4.7.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

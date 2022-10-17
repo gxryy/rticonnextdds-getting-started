@@ -1,0 +1,140 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Rti.ConnextDds.Extra</name>
+    </assembly>
+    <members>
+        <member name="T:Rti.Dds.Subscription.DataReaderAsyncExtensions">
+            <summary>
+            Provides extensions to <see cref="T:Rti.Dds.Subscription.DataReader`1"/>
+            </summary>
+            <remarks>
+            @note These extensions are included in the `Rti.ConnextDds.Extra` package.
+            </remarks>
+        </member>
+        <member name="M:Rti.Dds.Subscription.DataReaderAsyncExtensions.TakeAsync``1(Rti.Dds.Subscription.DataReader{``0})">
+             <summary>
+             Provides an infinite asynchronous enumerable that returns new samples
+             from a reader as they become available.
+             </summary>
+             <param name="reader">The reader where the samples come from</param>
+             <typeparam name="T">The reader's topic-type</typeparam>
+             <remarks>
+             <para>
+             When an element of the returned `IAsyncEnumerable` is requested, if
+             the reader has any data available, it returns it immediately.
+             Otherwise it awaits until new data is available.
+             </para>
+             <para>
+             The simplest way to use this function is an infinite loop that prints
+             the data as the reader receives it:
+             <code>
+             await foreach (var sample in reader.TakeAsync())
+             {
+                 if (sample.Info.ValidData)
+                 {
+                     Console.WriteLine($"Received data: {sample.Data}");
+                 }
+             }
+             </code>
+             </para>
+             <para>
+             @warning Each element (<see cref="T:Rti.Dds.Subscription.LoanedSample`1"/>)
+             is only valid until the enumerable advances to the next element. The
+             sample or any reference to the sample's fields can no longer be
+             accessed after the enumerable moves to the next sample.
+             </para>
+             <para>
+             The enumerable can receive a cancellation token, for example:
+             <code>
+             var cancel = new CancellationTokenSource();
+            
+             // A:
+             await foreach (var sample in reader.TakeAsync().WithCancellation(cancel.Token))
+             {
+                 ...
+             }
+            
+             // B:
+             cancel.Cancel();
+             </code>
+             </para>
+             <para>
+             @warning The disposal of the DataReader or the Subscriber and
+             DomainParticipant that contains it may fail while the iterator is
+             active. Use a cancellation token to ensure TakeAsync() finishes before
+             disposing said entities.
+             </para>
+             <para>
+             @see \ref DDSSubscriptionExampleModule_async for more code examples.
+             </para>
+             </remarks>
+        </member>
+        <member name="M:Rti.Dds.Subscription.DataReaderAsyncExtensions.TakeAsync``1(Rti.Dds.Subscription.Selector{``0})">
+            <summary>
+            Provides an infinite asynchronous enumerable that returns new samples
+            from a reader selector as they become available.
+            </summary>
+            <param name="selector">A selector created with <see cref="M:Rti.Dds.Subscription.DataReader`1.Select"/></param>
+            <typeparam name="T">The reader's topic-type</typeparam>
+            <seealso cref="M:Rti.Dds.Subscription.DataReaderAsyncExtensions.TakeAsync``1(Rti.Dds.Subscription.DataReader{``0})"/>
+        </member>
+        <member name="M:Rti.Dds.Subscription.DataReaderAsyncExtensions.ValidData``1(System.Collections.Generic.IAsyncEnumerable{Rti.Dds.Subscription.LoanedSample{``0}},System.Threading.CancellationToken)">
+            <summary>
+            Filters a sequence of samples, returning valid data only.
+            </summary>
+            <param name="samples">
+            A IAsyncEnumerable of loaned samples: the result of TakeAsync()
+            </param>
+            <param name="cancellationToken">
+            A cancellation token, automatically set by the compiler when
+            `.WithCancellation()` is used.
+            </param>
+            <returns>
+            A new IAsyncEnumerable such that, for each <see cref="T:Rti.Dds.Subscription.LoanedSample`1"/>
+            `s` in `samples`, it returns `s.Data` only if `s.Info.ValidData` is `true`.
+            </returns>
+            <remarks>
+            Just like TakeAsync, only the current `T` object in the iteration is
+            valid at a given moment; as soon as the iterator advances, that
+            object becomes invalid and can no longer be accessed (unless its
+            copied)
+            </remarks>
+        </member>
+        <member name="T:Rti.Dds.Topics.SerializerExtensions">
+            <summary>
+            Provides additional operations for <see cref="T:Rti.Dds.Topics.ISerializer`1"/>
+            </summary>
+            <remarks>
+            @note These methods require the package `Rti.ConnextDds.Extra`. This
+            package requires .NET Standard 2.1 (while `Rti.ConnextDds` only requires
+            .NET Standard 2.0).
+            </remarks>
+        </member>
+        <member name="M:Rti.Dds.Topics.SerializerExtensions.Serialize``1(Rti.Dds.Topics.ISerializer{``0},``0,System.Span{System.Byte})">
+            <summary>
+            Serializes a data sample into a byte span
+            </summary>
+            <param name="self">This ISerializer object (this is an extension method)</param>
+            <param name="sample">A data sample</param>
+            <param name="buffer">
+            A byte span with enough space to contain the serialized data. This
+            operation throws DdsException if the data doesn't fit. You can obtain the exact size
+            required for this sample with <see cref="M:Rti.Dds.Topics.ISerializer`1.GetSerializedSampleSize(`0)"/>
+            or a size that is guaranteed to suffice for any sample of this type
+            with <see cref="M:Rti.Dds.Topics.ISerializer`1.GetSerializedSampleMaxSize"/>.
+            </param>
+            <typeparam name="T">The type of the data sample</typeparam>
+            <returns>A slice of the input span with the exact serialized buffer</returns>
+        </member>
+        <member name="M:Rti.Dds.Topics.SerializerExtensions.Deserialize``1(Rti.Dds.Topics.ISerializer{``0},System.Span{System.Byte})">
+            <summary>
+            Deserializes a data sample from a byte span
+            </summary>
+            <param name="self">This ISerializer object (this is an extension method)</param>
+            <param name="buffer">A byte span containing the serialized data</param>
+            <typeparam name="T">The type of the data sample</typeparam>
+            <returns>A new data sample created by deserializing the buffer</returns>
+        </member>
+    </members>
+</doc>
